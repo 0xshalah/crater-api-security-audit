@@ -1,0 +1,29 @@
+{
+  "manifest_metadata": {
+    "generated_at": "2026-10-26T06:06:54Z",
+    "target_repository": "https://github.com/crater-invoice-inc/crater.git",
+    "pinned_commit": "05d5ce26fdd8d9466009163444e944259bc0cc2a",
+    "git_branch": "HEAD"
+  },
+  "runtime_environment": {
+    "php_version": "PHP 8.1.34 (cli) (built: Dec 29 2025 23:35:14) (NTS)",
+    "artisan_version": "Laravel Framework 8.83.16",
+    "docker_version": "Docker version 29.9.1, build dfc520dcc2",
+    "docker_compose_version": "Docker Compose version 5.6.0",
+    "mariadb_version": "13.0.2-MariaDB-ubu2604"
+  },
+  "artifact_checksums_sha256": {
+    "docker_compose": {
+      "path": "docker-compose.yml",
+      "sha256": "f80488008e8bbf04767a78ee82222a5b935fabd23f9e16f879aa7751e2c385d8"
+    },
+    "security_research_seeder": {
+      "path": "database/seeders/SecurityResearchSeeder.php",
+      "sha256": "08edc06e43b875decba6faa9d6348cc2a537114dbb8148ac54f3ce72f0bc5ebc"
+    },
+    "testing_environment_config": {
+      "path": ".env.testing",
+      "sha256": "f5161a678c31347911b9cb88dcb7d2ea738074972bfa597ed5dfd2a8fb447f5b"
+    }
+  }
+}

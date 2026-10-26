@@ -1,0 +1,142 @@
+diff --git i/app/Http/Controllers/V1/Admin/Company/CompaniesController.php w/app/Http/Controllers/V1/Admin/Company/CompaniesController.php
+index 55f4353b..f9b7854a 100644
+--- i/app/Http/Controllers/V1/Admin/Company/CompaniesController.php
++++ w/app/Http/Controllers/V1/Admin/Company/CompaniesController.php
+@@ -61,7 +61,7 @@ class CompaniesController extends Controller
+         $company = Company::find($request->header('company'));
+         $this->authorize('transfer company ownership', $company);
+ 
+-        if ($user->hasCompany($company->id)) {
++        if (! $user->hasCompany($company->id)) {
+             return response()->json([
+                 'success' => false,
+                 'message' => 'User does not belongs to this company.'
+diff --git i/app/Http/Controllers/V1/Admin/Customer/CustomersController.php w/app/Http/Controllers/V1/Admin/Customer/CustomersController.php
+index 55a011d3..83ddfe40 100644
+--- i/app/Http/Controllers/V1/Admin/Customer/CustomersController.php
++++ w/app/Http/Controllers/V1/Admin/Customer/CustomersController.php
+@@ -99,6 +99,10 @@ class CustomersController extends Controller
+     {
+         $this->authorize('delete multiple customers');
+ 
++        if (Customer::whereCompany()->whereIn('id', $request->ids)->count() !== count($request->ids)) {
++            abort(403, 'This action is unauthorized.');
++        }
++
+         Customer::deleteCustomers($request->ids);
+ 
+         return response()->json([
+diff --git i/app/Http/Controllers/V1/Admin/Estimate/EstimatesController.php w/app/Http/Controllers/V1/Admin/Estimate/EstimatesController.php
+index e43a4be6..a7404c4f 100644
+--- i/app/Http/Controllers/V1/Admin/Estimate/EstimatesController.php
++++ w/app/Http/Controllers/V1/Admin/Estimate/EstimatesController.php
+@@ -68,6 +68,10 @@ class EstimatesController extends Controller
+     {
+         $this->authorize('delete multiple estimates');
+ 
++        if (Estimate::whereCompany()->whereIn('id', $request->ids)->count() !== count($request->ids)) {
++            abort(403, 'This action is unauthorized.');
++        }
++
+         Estimate::destroy($request->ids);
+ 
+         return response()->json([
+diff --git i/app/Http/Controllers/V1/Admin/Expense/ExpensesController.php w/app/Http/Controllers/V1/Admin/Expense/ExpensesController.php
+index 9027a1f4..ecf8ba0f 100644
+--- i/app/Http/Controllers/V1/Admin/Expense/ExpensesController.php
++++ w/app/Http/Controllers/V1/Admin/Expense/ExpensesController.php
+@@ -84,6 +84,10 @@ class ExpensesController extends Controller
+     {
+         $this->authorize('delete multiple expenses');
+ 
++        if (Expense::whereCompany()->whereIn('id', $request->ids)->count() !== count($request->ids)) {
++            abort(403, 'This action is unauthorized.');
++        }
++
+         Expense::destroy($request->ids);
+ 
+         return response()->json([
+diff --git i/app/Http/Controllers/V1/Admin/Invoice/CloneInvoiceController.php w/app/Http/Controllers/V1/Admin/Invoice/CloneInvoiceController.php
+index 95c47f54..25773922 100644
+--- i/app/Http/Controllers/V1/Admin/Invoice/CloneInvoiceController.php
++++ w/app/Http/Controllers/V1/Admin/Invoice/CloneInvoiceController.php
+@@ -21,6 +21,7 @@ class CloneInvoiceController extends Controller
+      */
+     public function __invoke(Request $request, Invoice $invoice)
+     {
++        $this->authorize('view', $invoice);
+         $this->authorize('create', Invoice::class);
+ 
+         $date = Carbon::now();
+diff --git i/app/Http/Controllers/V1/Admin/Invoice/InvoicesController.php w/app/Http/Controllers/V1/Admin/Invoice/InvoicesController.php
+index 9aeefe51..1f70f1a3 100644
+--- i/app/Http/Controllers/V1/Admin/Invoice/InvoicesController.php
++++ w/app/Http/Controllers/V1/Admin/Invoice/InvoicesController.php
+@@ -102,6 +102,10 @@ class InvoicesController extends Controller
+     {
+         $this->authorize('delete multiple invoices');
+ 
++        if (Invoice::whereCompany()->whereIn('id', $request->ids)->count() !== count($request->ids)) {
++            abort(403, 'This action is unauthorized.');
++        }
++
+         Invoice::deleteInvoices($request->ids);
+ 
+         return response()->json([
+diff --git i/app/Http/Controllers/V1/Admin/Item/ItemsController.php w/app/Http/Controllers/V1/Admin/Item/ItemsController.php
+index 8e74c696..76b57c96 100644
+--- i/app/Http/Controllers/V1/Admin/Item/ItemsController.php
++++ w/app/Http/Controllers/V1/Admin/Item/ItemsController.php
+@@ -92,6 +92,10 @@ class ItemsController extends Controller
+     {
+         $this->authorize('delete multiple items');
+ 
++        if (Item::whereCompany()->whereIn('id', $request->ids)->count() !== count($request->ids)) {
++            abort(403, 'This action is unauthorized.');
++        }
++
+         Item::destroy($request->ids);
+ 
+         return response()->json([
+diff --git i/app/Http/Controllers/V1/Admin/Payment/PaymentsController.php w/app/Http/Controllers/V1/Admin/Payment/PaymentsController.php
+index 85119f76..96ae2537 100644
+--- i/app/Http/Controllers/V1/Admin/Payment/PaymentsController.php
++++ w/app/Http/Controllers/V1/Admin/Payment/PaymentsController.php
+@@ -72,6 +72,10 @@ class PaymentsController extends Controller
+     {
+         $this->authorize('delete multiple payments');
+ 
++        if (Payment::whereCompany()->whereIn('id', $request->ids)->count() !== count($request->ids)) {
++            abort(403, 'This action is unauthorized.');
++        }
++
+         Payment::deletePayments($request->ids);
+ 
+         return response()->json([
+diff --git i/app/Http/Controllers/V1/Admin/RecurringInvoice/RecurringInvoiceController.php w/app/Http/Controllers/V1/Admin/RecurringInvoice/RecurringInvoiceController.php
+index 10fc56c4..e1b0c9a6 100644
+--- i/app/Http/Controllers/V1/Admin/RecurringInvoice/RecurringInvoiceController.php
++++ w/app/Http/Controllers/V1/Admin/RecurringInvoice/RecurringInvoiceController.php
+@@ -85,6 +85,10 @@ class RecurringInvoiceController extends Controller
+     {
+         $this->authorize('delete multiple recurring invoices');
+ 
++        if (RecurringInvoice::whereCompany()->whereIn('id', $request->ids)->count() !== count($request->ids)) {
++            abort(403, 'This action is unauthorized.');
++        }
++
+         RecurringInvoice::deleteRecurringInvoice($request->ids);
+ 
+         return response()->json([
+diff --git i/app/Http/Controllers/V1/Admin/Settings/GetCompanyMailConfigurationController.php w/app/Http/Controllers/V1/Admin/Settings/GetCompanyMailConfigurationController.php
+index 6e8b6b76..bda64981 100644
+--- i/app/Http/Controllers/V1/Admin/Settings/GetCompanyMailConfigurationController.php
++++ w/app/Http/Controllers/V1/Admin/Settings/GetCompanyMailConfigurationController.php
+@@ -15,6 +15,7 @@ class GetCompanyMailConfigurationController extends Controller
+      */
+     public function __invoke(Request $request)
+     {
++        $this->authorize('manage email config');
+         $mailConfig = [
+             'from_name' => config('mail.from.name'),
+             'from_mail' => config('mail.from.address'),

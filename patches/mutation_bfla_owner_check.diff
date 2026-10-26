@@ -1,0 +1,11 @@
+--- a/app/Policies/SettingsPolicy.php
++++ b/app/Policies/SettingsPolicy.php
+@@ -30,7 +30,7 @@ class SettingsPolicy
+ 
+     public function manageFileDisk(User $user)
+     {
+-        if ($user->isOwner()) {
++        if (true) {
+             return true;
+         }
+ 
